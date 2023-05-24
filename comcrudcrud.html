@@ -9,8 +9,11 @@
             <input id='phonenumber' type="tel" name="phonenumber" />
             <button> Submit </button>
         </form>
+        
         <ul id='listOfUsers'></ul>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
         <script>
+            var id1;
             function saveToLocalStorage(event) {
                 event.preventDefault();
                 const name = event.target.username.value;
@@ -24,20 +27,32 @@
                     email,
                     phonenumber
                 }
+                axios
+                 .post("https://crudcrud.com/api/25a3eb8251e8499ca9c2f07e851a20a7/bookAppointment",obj)
+                 .then(res=>localStorage.setItem(res.data.Email,JSON.stringify(res.data)))                 
+                .catch(err=>console.log(err));
                 localStorage.setItem(obj.email, JSON.stringify(obj))
-                showNewUserOnScreen(obj)
+                showNewUserOnScreen(obj);
             }
 
             window.addEventListener("DOMContentLoaded", () => {
                 const localStorageObj = localStorage;
                 const localstoragekeys  = Object.keys(localStorageObj)
-
-                for(var i =0; i< localstoragekeys.length; i++){
-                    const key = localstoragekeys[i]
-                    const userDetailsString = localStorageObj[key];
-                    const userDetailsObj = JSON.parse(userDetailsString);
-                    showNewUserOnScreen(userDetailsObj)
-                }
+                axios
+         .get("https://crudcrud.com/api/25a3eb8251e8499ca9c2f07e851a20a7/bookAppointment")
+          .then(res=>{
+            for(let i=0;i<res.data.length;i++)
+            {
+                showNewUserOnScreen(res.data[i]);
+            }
+          })
+       .catch(err=>console.log(err));
+                // for(var i =0; i< localstoragekeys.length; i++){
+                //     const key = localstoragekeys[i]
+                //     const userDetailsString = localStorageObj[key];
+                //     const userDetailsObj = JSON.parse(userDetailsString);
+                //     showNewUserOnScreen(userDetailsObj)
+                // }
             })
 
             function showNewUserOnScreen(user){
@@ -75,9 +90,21 @@
                 console.log(emailId)
                 localStorage.removeItem(emailId);
                 removeUserFromScreen(emailId);
-
+                var id;
+                axios
+               .get("https://crudcrud.com/api/25a3eb8251e8499ca9c2f07e851a20a7/bookAppointment")
+               .then(res=>{let got = res.data.filter(da=>da.email==emailId);
+                deleteapi(got[0]._id);
+               })
+               .catch(err=>console.log(err));
+                
+                         }
+              function deleteapi(id)
+              {axios
+              .delete(`https://crudcrud.com/api/25a3eb8251e8499ca9c2f07e851a20a7/bookAppointment/${id}`)
+              .catch(err=>console.log(err));
             }
-
+        
             function removeUserFromScreen(emailId){
                 const parentNode = document.getElementById('listOfUsers');
                 const childNodeToBeDeleted = document.getElementById(emailId);
