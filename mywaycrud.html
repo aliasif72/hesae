@@ -18,6 +18,8 @@
             
             function saveToLocalStorage(event) {
                 event.preventDefault();
+                console.log(Email);
+                console.log(uId);
                 const name = event.target.username.value;
                 const email = event.target.emailId.value;
                 const phonenumber = event.target.phonenumber.value;
@@ -29,37 +31,40 @@
                     email,
                     phonenumber
                 }
+                const obj1 = {
+                    _id:uId,
+                    name,
+                    email,
+                    phonenumber
+                }
                     if(Email=='')
                     {
                         axios
-                    .post("https://crudcrud.com/api/7fd1bd00d6d4443b96422a7c2f4cf209/bookAppointment",obj)
+                    .post("https://crudcrud.com/api/8c185df035784d86b9fa4bb0ad5fe1ee/bookAppointment",obj)
                     .then(res=>
                     {
+                        console.log(res);
+                        console.log("chaltapost");
                         localStorage.setItem(res.data.email,JSON.stringify(res.data));
                         showNewUserOnScreen(res.data);
                     })                 
                     .catch(err=>console.log(err));
                     }
-                    else if(Email!='' && uId!=''){
-                        axios
-                    .put(`https://crudcrud.com/api/7fd1bd00d6d4443b96422a7c2f4cf209/bookAppointment/${uId}`,obj)
-                    .then(res=>
-                    {
-                        localStorage.setItem(res.data.email,JSON.stringify(res.data));
-                        showNewUserOnScreen(res.data);
-                    })
-                    .catch(err=>console.log(err));}
                     else{
-                        console.log("ganta");
-                    }
-                         
+                        axios
+                    .put(`https://crudcrud.com/api/8c185df035784d86b9fa4bb0ad5fe1ee/bookAppointment/${uId}`,obj)
+                    .then(                    
+                        localset(obj1)
+                                       )
+                    .catch(err=>console.log(err));}
+                                            
             }
 
             window.addEventListener("DOMContentLoaded", () => {
                 const localStorageObj = localStorage;
                 const localstoragekeys  = Object.keys(localStorageObj)
                 axios
-         .get("https://crudcrud.com/api/7fd1bd00d6d4443b96422a7c2f4cf209/bookAppointment")
+         .get("https://crudcrud.com/api/8c185df035784d86b9fa4bb0ad5fe1ee/bookAppointment")
           .then(res=>{
             for(let i=0;i<res.data.length;i++)
             {
@@ -107,7 +112,7 @@
             // deleteUser('abc@gmail.com')
             function deleteUser(emailId, userId) {
                 axios
-              .delete(`https://crudcrud.com/api/7fd1bd00d6d4443b96422a7c2f4cf209/bookAppointment/${userId}`)
+              .delete(`https://crudcrud.com/api/8c185df035784d86b9fa4bb0ad5fe1ee/bookAppointment/${userId}`)
               .then()
               .catch(err=>console.log(err));         
                localStorage.removeItem(emailId);
@@ -123,7 +128,11 @@
              // function deleteapi(id)
              
             }
-
+            function localset(obj1)
+            {
+                localStorage.setItem(obj1.email,JSON.stringify(obj1));
+              showNewUserOnScreen(obj1);
+                        }            
             function deleteUserlocal(userId, emailId){
                 console.log(emailId)
                 console.log(userId)
@@ -152,15 +161,6 @@
                     parentNode.removeChild(childNodeToBeDeleted)
                 }
             }
-          
-
-
-
-
-
-
-        </script>
-
-
+                  </script>
     </body>
 </html>
