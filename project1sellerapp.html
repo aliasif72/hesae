@@ -1,0 +1,125 @@
+<html>
+<head>
+    <title>Seller App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+</head>
+<body style="background-image:url(seller.jpg);background-size:cover;">
+<form action onsubmit="pushCrud(event)">
+    <div class="form-group auto">
+        <fieldset style="width:900px;height:180px;margin:auto;background:transparent">
+        <label for="name"><h6>Candy name:</h6></label>
+        <label for="des" style="margin-left: 15%;"><h6>Description:</h6></label>
+        <label for="price" style="margin-left:15%"><h6>Price:</h6></label>
+        <label for="quan" style="margin-left:15%" ><h6>Quantity:</h6></label><br>
+        <input type="text" id="name" style="width:150px;" placeholder="Candyname" autofocus >
+        <input type="text" id="des" style="width:150px;margin-left:8.6%;" placeholder="Description" >
+        <input type="number" id="price" style="width:80px;margin-left:7.5%;" min="0" placeholder="Price" >
+        <input type="number" id="quan" style="width:85px;margin-left:10.5%;" min="0" placeholder="Quantity">
+        <button onclick="" style="margin-left:8%">Add Item</button> 
+    </fieldset>
+ </div>
+ </form>
+ <form> 
+    <div class="form-group">
+    <fieldset style="width:900px;height:180px;margin:auto;background:transparent">
+    <ul id="items">
+    </ul>
+</fieldset>
+   </div>
+</form>
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+   <script> 
+
+
+    // add to crudcrud
+    function pushCrud(event)
+    {
+        event.preventDefault();
+                const name = event.target.name.value;
+                const des = event.target.des.value;
+                const price = event.target.price.value;
+                const quan = event.target.quan.value;
+                     let obj = {
+                    name: name,
+                    des: des,
+                    price: price,
+                    quan : quan
+                }
+                axios
+                 .post("https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory",obj)
+                 .then(res=> {
+                showItems(res.data);
+    })                 
+                .catch(err=>console.log(err));
+               
+            }
+    
+             //On refresh
+            window.addEventListener("DOMContentLoaded", () => {
+            axios
+          .get("https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory")
+          .then(res=>{
+            for(let i=0;i<res.data.length;i++)
+            {
+                showItems(res.data[i]);
+            }
+          })
+       .catch(err=>console.log(err));
+        });
+
+
+       //show items on screen
+   function showItems(cobj)
+   {
+    const parentNode=document.getElementById("items");
+    const it=`<li id=${cobj._id} style="font-weight:bold;"> ${cobj.name}    -    ${cobj.des}    -    ${cobj.price}rupees    -    ${cobj.quan}
+                                        <button onclick=buyOne('${cobj._id}')> buy One </button>
+                                        <button onclick=buyTwo('${cobj._id}')>buy Two </button>
+                                        <button onclick=buyThree('${cobj._id}')> buy Three </button>
+                                     </li>`
+     parentNode.innerHTML=parentNode.innerHTML+it;
+         }                                
+      
+
+         //BUY ONE
+      function buyOne(id) 
+      {
+        axios
+        .get("https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory")
+        .then(res=>{let got = res.data.filter(da=>da._id==id);
+                    updateQuan(got, 1);})
+       .catch(err=>console.log(err));
+             }
+
+         //BUY TWO
+          function buyTwo(id)
+       {
+        axios
+        .get("https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory")
+        .then(res=>{let got = res.data.filter(da=>da._id==id);
+                    updateQuan(got, 2);})
+       .catch(err=>console.log(err));
+                                }
+         //BUY THREE
+        function buyThree(id)
+       {
+         axios
+        .get("https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory/${id}")
+        .then(res=>{let got = res.data.filter(da=>da._id==id);
+                    updateQuan(got, 3);})
+       .catch(err=>console.log(err));
+              }
+
+        //update Quantity                                
+        function updateQuan(ucobj, cut)
+        {
+            ucobj.quan=ucobj.quan-cut;
+         axios
+        .put(`https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory/${id}`,ucobj)
+        .then(console.log("hurray"))
+        .catch(err=>console.log(err));
+          }
+</script>
+    </body>
+</html>
