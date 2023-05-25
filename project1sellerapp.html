@@ -135,7 +135,7 @@
             delete ucobj._id;
          axios
         .put(`https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory/${id}`,ucobj)
-        .then(console.log("hurray"))
+        .then(document.location.reload())
         .catch(err=>console.log(err));
           }
 </script>
