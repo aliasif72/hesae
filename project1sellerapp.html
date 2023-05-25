@@ -47,7 +47,7 @@
                     quan : quan
                 }
                 axios
-                 .post("https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory",obj)
+                 .post("https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory",obj)
                  .then(res=> {
                 showItems(res.data);
     })                 
@@ -58,7 +58,7 @@
              //On refresh
             window.addEventListener("DOMContentLoaded", () => {
             axios
-          .get("https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory")
+          .get("https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory")
           .then(res=>{
             for(let i=0;i<res.data.length;i++)
             {
@@ -74,49 +74,67 @@
    {
     const parentNode=document.getElementById("items");
     const it=`<li id=${cobj._id} style="font-weight:bold;"> ${cobj.name}    -    ${cobj.des}    -    ${cobj.price}rupees    -    ${cobj.quan}
-                                        <button onclick=buyOne('${cobj._id}')> buy One </button>
-                                        <button onclick=buyTwo('${cobj._id}')>buy Two </button>
-                                        <button onclick=buyThree('${cobj._id}')> buy Three </button>
+                                        <button onclick=buyOne(event,'${cobj._id}')> buy One </button>
+                                        <button onclick=buyTwo(event,'${cobj._id}')>buy Two </button>
+                                        <button onclick=buyThree(event,'${cobj._id}')> buy Three </button>
                                      </li>`
      parentNode.innerHTML=parentNode.innerHTML+it;
          }                                
       
 
          //BUY ONE
-      function buyOne(id) 
+      function buyOne(event,id) 
       {
+        event.preventDefault();
+        console.log("one");
+        console.log(id);
         axios
-        .get("https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory")
-        .then(res=>{let got = res.data.filter(da=>da._id==id);
-                    updateQuan(got, 1);})
+        .get(`https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory/${id}`)
+        .then(res=>{
+            console.log(res.data);
+             updateQuan(res.data,1,id);
+        } )                     
        .catch(err=>console.log(err));
              }
 
          //BUY TWO
-          function buyTwo(id)
+          function buyTwo(event,id)
        {
+        event.preventDefault();
+        console.log("two");
         axios
-        .get("https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory")
-        .then(res=>{let got = res.data.filter(da=>da._id==id);
-                    updateQuan(got, 2);})
+        .get(`https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory/${id}`)
+        .then(res=>{
+            console.log(res.data);
+             updateQuan(res.data,2,id);
+        } )         
        .catch(err=>console.log(err));
                                 }
          //BUY THREE
-        function buyThree(id)
+        function buyThree(event,id)
        {
+        event.preventDefault();
+        console.log("three");
          axios
-        .get("https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory/${id}")
-        .then(res=>{let got = res.data.filter(da=>da._id==id);
-                    updateQuan(got, 3);})
+        .get(`https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory/${id}`)
+        .then(res=>{
+            console.log(res.data);
+             updateQuan(res.data,3,id);
+        } )         
        .catch(err=>console.log(err));
               }
 
         //update Quantity                                
-        function updateQuan(ucobj, cut)
+        function updateQuan(ucobj,cut,id)
         {
-            ucobj.quan=ucobj.quan-cut;
+            console.log(ucobj);
+            console.log(id);
+            console.log(cut);
+            ucobj.quan=ucobj.quan-cut;  
+            console.log(ucobj);
+            delete ucobj._id;
          axios
-        .put(`https://crudcrud.com/api/35c459b46e634aa4bd473c4f5386fba5/inventory/${id}`,ucobj)
+        .put(`https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory/${id}`,ucobj)
         .then(console.log("hurray"))
         .catch(err=>console.log(err));
           }
