@@ -33,7 +33,7 @@
 
 
     // add to crudcrud
-    function pushCrud(event)
+    async function pushCrud(event)
     {
         event.preventDefault();
                 const name = event.target.name.value;
@@ -46,31 +46,39 @@
                     price: price,
                     quan : quan
                 }
-                axios
-                 .post("https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory",obj)
-                 .then(res=> {
-                showItems(res.data);
-    })                 
-                .catch(err=>console.log(err));
-               
+               try
+               { let resp=await axios.post("https://crudcrud.com/api/4ec4742a64b64c6a82269086dcb27fb0/inventory",obj)
+                 showItems(resp.data);
+                     }        
+                catch(err)
+                {
+                    console.log(err);
+                }
             }
+               
+            
     
              //On refresh
-            window.addEventListener("DOMContentLoaded", () => {
-            axios
-          .get("https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory")
-          .then(res=>{
-            for(let i=0;i<res.data.length;i++)
+              window.addEventListener("DOMContentLoaded", async function load()
+                {
+                    try
+                    {
+           let resp= await axios.get("https://crudcrud.com/api/4ec4742a64b64c6a82269086dcb27fb0/inventory")
+                 for(let i=0;i<resp.data.length;i++)
             {
-                showItems(res.data[i]);
+                showItems(resp.data[i]);
             }
-          })
-       .catch(err=>console.log(err));
-        });
+        }
+          catch(err)
+          {
+            console.log(err);
+        };
+    }
+);
 
 
        //show items on screen
-   function showItems(cobj)
+    function showItems(cobj)
    {
     const parentNode=document.getElementById("items");
     const it=`<li id=${cobj._id} style="font-weight:bold;"> ${cobj.name}    -    ${cobj.des}    -    ${cobj.price}rupees    -    ${cobj.quan}
@@ -83,61 +91,65 @@
       
 
          //BUY ONE
-      function buyOne(event,id) 
+        async function buyOne(event,id)
       {
         event.preventDefault();
-        console.log("one");
-        console.log(id);
-        axios
-        .get(`https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory/${id}`)
-        .then(res=>{
-            console.log(res.data);
-             updateQuan(res.data,1,id);
-        } )                     
-       .catch(err=>console.log(err));
+        try
+        {
+            let resp= await axios.get(`https://crudcrud.com/api/4ec4742a64b64c6a82269086dcb27fb0/inventory/${id}`)
+        updateQuan(resp.data,1,id);
+        }          
+       catch(err)
+       {
+        console.log(err);
+       }
              }
 
          //BUY TWO
-          function buyTwo(event,id)
+         async function buyTwo(event,id)
        {
         event.preventDefault();
-        console.log("two");
-        axios
-        .get(`https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory/${id}`)
-        .then(res=>{
-            console.log(res.data);
-             updateQuan(res.data,2,id);
-        } )         
-       .catch(err=>console.log(err));
+        try
+        {
+            let resp= await axios.get(`https://crudcrud.com/api/4ec4742a64b64c6a82269086dcb27fb0/inventory/${id}`)
+        updateQuan(resp.data,2,id);
+        }          
+       catch(err)
+       {
+        console.log(err);
+       }
                                 }
+
          //BUY THREE
-        function buyThree(event,id)
+         async function buyThree(event,id)
        {
         event.preventDefault();
-        console.log("three");
-         axios
-        .get(`https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory/${id}`)
-        .then(res=>{
-            console.log(res.data);
-             updateQuan(res.data,3,id);
-        } )         
-       .catch(err=>console.log(err));
-              }
+        try
+        {
+            let resp= await axios.get(`https://crudcrud.com/api/4ec4742a64b64c6a82269086dcb27fb0/inventory/${id}`)
+        updateQuan(resp.data,3,id);
+        }          
+       catch(err)
+       {
+        console.log(err);
+       }
+       }
 
         //update Quantity                                
-        function updateQuan(ucobj,cut,id)
+        async function updateQuan(ucobj,cut,id)
         {
-            console.log(ucobj);
-            console.log(id);
-            console.log(cut);
-            ucobj.quan=ucobj.quan-cut;  
-            console.log(ucobj);
+                      ucobj.quan=ucobj.quan-cut;  
             delete ucobj._id;
-         axios
-        .put(`https://crudcrud.com/api/77a630274ee0400eb0c468a4a2f29209/inventory/${id}`,ucobj)
-        .then(document.location.reload())
-        .catch(err=>console.log(err));
-          }
+            try
+            {
+         let resp = await axios.put(`https://crudcrud.com/api/4ec4742a64b64c6a82269086dcb27fb0/inventory/${id}`,ucobj)
+        window.location.reload();
+            }
+        catch(err)
+        {
+            console.log(err);
+        }     }
+
 </script>
     </body>
 </html>
